@@ -11,6 +11,8 @@ import java.util.Set;
 
 @Entity
 @Table(name = "courses")
+@NamedNativeQuery(name = "courses.findFacultiesByCourseId",
+                query = "select * from ")
 public class databaseCourse {
 
     @Id
@@ -42,10 +44,14 @@ public class databaseCourse {
 
     }
 
-    public databaseCourse(String name, int max_grades, int lectures, Set<databaseFaculty> faculties) {
+    public databaseCourse(String name, int max_grades, int lectures,
+                          databaseDepartment course_department, Set<databaseStudent> students,
+                          Set<databaseFaculty> faculties) {
         this.name = name;
         this.max_grades = max_grades;
         this.lectures = lectures;
+        this.course_department = course_department;
+        this.students = students;
         this.faculties = faculties;
     }
 
@@ -79,6 +85,22 @@ public class databaseCourse {
 
     public void setLectures(int lectures) {
         this.lectures = lectures;
+    }
+
+    public databaseDepartment getCourse_department() {
+        return course_department;
+    }
+
+    public void setCourse_department(databaseDepartment course_department) {
+        this.course_department = course_department;
+    }
+
+    public Set<databaseStudent> getStudents() {
+        return students;
+    }
+
+    public void setStudents(Set<databaseStudent> students) {
+        this.students = students;
     }
 
     public Set<databaseFaculty> getFaculties() {

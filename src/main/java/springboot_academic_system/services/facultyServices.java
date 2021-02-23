@@ -31,7 +31,7 @@ public class facultyServices {
     public Optional<databaseFaculty> editFacultyProfile(String faculty_id){
         return facultyRepo.findById(faculty_id);
     }
-    
+
     // get all courses taught
     // get dept of faculties
 

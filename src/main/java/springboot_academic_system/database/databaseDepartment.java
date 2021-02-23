@@ -35,11 +35,16 @@ public class databaseDepartment {
     @OneToMany(mappedBy = "faculty_department")
     private List<databaseFaculty> faculty_list = new ArrayList<>();
 
+    public databaseDepartment(){
+
+    }
+
     public databaseDepartment(String department_name, String hod_name, LocalDate DOE,
-                              List<databaseFaculty> faculty_list) {
+                              List<databaseCourse> course_list, List<databaseFaculty> faculty_list) {
         this.department_name = department_name;
         this.hod_name = hod_name;
         this.DOE = DOE;
+        this.course_list = course_list;
         this.faculty_list = faculty_list;
     }
 
@@ -75,6 +80,14 @@ public class databaseDepartment {
         this.DOE = DOE;
     }
 
+    public List<databaseCourse> getCourse_list() {
+        return course_list;
+    }
+
+    public void setCourse_list(List<databaseCourse> course_list) {
+        this.course_list = course_list;
+    }
+
     public List<databaseFaculty> getFaculty_list() {
         return faculty_list;
     }
@@ -82,6 +95,4 @@ public class databaseDepartment {
     public void setFaculty_list(List<databaseFaculty> faculty_list) {
         this.faculty_list = faculty_list;
     }
-
-
 }
