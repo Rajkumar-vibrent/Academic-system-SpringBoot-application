@@ -1,11 +1,8 @@
 package springboot_academic_system.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import springboot_academic_system.database.databaseDepartment;
-import springboot_academic_system.database.databaseFaculty;
-import springboot_academic_system.database.databaseStudent;
+import springboot_academic_system.database.*;
 import springboot_academic_system.repository.courseRepository;
-import springboot_academic_system.database.databaseCourse;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -56,6 +53,11 @@ public class courseServices {
     public Set<databaseStudent> studentsByCourseId(String course_id){
         Optional<databaseCourse> student = courseRepo.findById(course_id);
         return student.get().getStudents();
+    }
+
+    public List<databaseResult> getResultByCourseId(String course_id){
+        Optional<databaseCourse> course = courseRepo.findById(course_id);
+        return course.get().getResults();
     }
 
 }

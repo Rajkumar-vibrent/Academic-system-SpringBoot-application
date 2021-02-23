@@ -44,15 +44,16 @@ public class databaseStudent {
 
     }
 
-    public databaseStudent(String first_name, String last_name, gender gender, LocalDate DOB, String email_ID) {
-        super();
+    public databaseStudent(String first_name, String last_name,
+                           springboot_academic_system.database.gender gender,
+                           LocalDate DOB, String email_ID, Set<databaseCourse> courses) {
         this.first_name = first_name;
         this.last_name = last_name;
         this.gender = gender;
         this.DOB = DOB;
         this.email_ID = email_ID;
+        this.courses = courses;
     }
-
 
     public int getStudent_ID() {
         return student_ID;
@@ -78,11 +79,11 @@ public class databaseStudent {
         this.last_name = last_name;
     }
 
-    public gender getGender() {
+    public springboot_academic_system.database.gender getGender() {
         return gender;
     }
 
-    public void setGender(gender gender) {
+    public void setGender(springboot_academic_system.database.gender gender) {
         this.gender = gender;
     }
 
@@ -100,5 +101,13 @@ public class databaseStudent {
 
     public void setEmail_ID(String email_ID) {
         this.email_ID = email_ID;
+    }
+
+    public Set<databaseCourse> getCourses() {
+        return courses;
+    }
+
+    public void setCourses(Set<databaseCourse> courses) {
+        this.courses = courses;
     }
 }

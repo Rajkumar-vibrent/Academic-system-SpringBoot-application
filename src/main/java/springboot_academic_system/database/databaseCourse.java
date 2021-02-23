@@ -11,8 +11,6 @@ import java.util.Set;
 
 @Entity
 @Table(name = "courses")
-@NamedNativeQuery(name = "courses.findFacultiesByCourseId",
-                query = "select * from ")
 public class databaseCourse {
 
     @Id
@@ -37,8 +35,9 @@ public class databaseCourse {
 
     @ManyToMany(mappedBy = "courses")
     private Set<databaseFaculty> faculties = new HashSet<>();
-//    @OneToMany(cascade = CascadeType.ALL)
-//    List<databaseRESULT> results = new ArrayList<>();
+
+    @OneToMany(cascade = CascadeType.ALL)
+    List<databaseResult> results = new ArrayList<>();
 
     public databaseCourse(){
 
@@ -46,13 +45,14 @@ public class databaseCourse {
 
     public databaseCourse(String name, int max_grades, int lectures,
                           databaseDepartment course_department, Set<databaseStudent> students,
-                          Set<databaseFaculty> faculties) {
+                          Set<databaseFaculty> faculties, List<databaseResult> results) {
         this.name = name;
         this.max_grades = max_grades;
         this.lectures = lectures;
         this.course_department = course_department;
         this.students = students;
         this.faculties = faculties;
+        this.results = results;
     }
 
     public String getCourse_ID() {
@@ -109,5 +109,13 @@ public class databaseCourse {
 
     public void setFaculties(Set<databaseFaculty> faculties) {
         this.faculties = faculties;
+    }
+
+    public List<databaseResult> getResults() {
+        return results;
+    }
+
+    public void setResults(List<databaseResult> results) {
+        this.results = results;
     }
 }

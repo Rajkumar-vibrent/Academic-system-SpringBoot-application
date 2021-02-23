@@ -65,15 +65,18 @@ public class databaseFaculty implements Serializable {
 
     }
 
-    public databaseFaculty(String faculty_name, LocalDate date_of_birth, LocalDate date_of_joining,
-                           String DOW, int experience, String email_id, Set<databaseCourse> courses,
-                           gender gender, professor professor_level) {
+    public databaseFaculty(String faculty_name, LocalDate date_of_birth,
+                           LocalDate date_of_joining, String DOW, int experience,
+                           String email_id, databaseDepartment faculty_department,
+                           Set<databaseCourse> courses, gender gender,
+                           professor professor_level) {
         this.faculty_name = faculty_name;
         this.date_of_birth = date_of_birth;
         this.date_of_joining = date_of_joining;
         this.DOW = DOW;
         this.experience = experience;
         this.email_id = email_id;
+        this.faculty_department = faculty_department;
         this.courses = courses;
         Gender = gender;
         Professor_level = professor_level;
@@ -133,6 +136,14 @@ public class databaseFaculty implements Serializable {
 
     public void setEmail_id(String email_id) {
         this.email_id = email_id;
+    }
+
+    public databaseDepartment getFaculty_department() {
+        return faculty_department;
+    }
+
+    public void setFaculty_department(databaseDepartment faculty_department) {
+        this.faculty_department = faculty_department;
     }
 
     public Set<databaseCourse> getCourses() {

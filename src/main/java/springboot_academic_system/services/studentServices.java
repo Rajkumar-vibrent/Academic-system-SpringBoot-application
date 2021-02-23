@@ -3,6 +3,7 @@ package springboot_academic_system.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import springboot_academic_system.database.databaseCourse;
 import springboot_academic_system.repository.studentRepository;
 import springboot_academic_system.database.databaseStudent;
 
@@ -10,6 +11,7 @@ import springboot_academic_system.database.databaseStudent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class studentServices {
@@ -38,6 +40,11 @@ public class studentServices {
 
     public void add(databaseStudent student){
         studentRepo.save(student);
+    }
+
+    public Set<databaseCourse> getCoursesByStudentId(int Id){
+        Optional<databaseStudent> student = studentRepo.findById(Id);
+        return student.get().getCourses();
     }
 
 }
