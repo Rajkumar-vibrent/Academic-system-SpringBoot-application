@@ -1,5 +1,8 @@
 package springboot_academic_system.database;
 
+import org.hibernate.annotations.GenericGenerator;
+import springboot_academic_system.IdGenerator;
+
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -18,6 +21,14 @@ public class databaseDepartment {
 
     @Id
     @Column(name = "dept_ID", nullable = false)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "department_sequence")
+    @GenericGenerator(
+            name = "department_sequence",
+            strategy = "springboot_academic_system.IdGenerator",
+            parameters = {
+                    @org.hibernate.annotations.Parameter(name = IdGenerator.INCREMENT_PARAM, value = "1"),
+                    @org.hibernate.annotations.Parameter(name = IdGenerator.PREFIX_VALUE_PARAMETER, value = "DEPT_"),
+                    @org.hibernate.annotations.Parameter(name = IdGenerator.NUMBER_FORMAT_PARAMETER, value = "%d") })
     private String department_id;
 
     @Column(name = "dept_name", unique = true)

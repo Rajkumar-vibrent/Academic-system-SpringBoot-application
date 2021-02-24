@@ -1,11 +1,13 @@
 package springboot_academic_system.database;
 
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
+import springboot_academic_system.IdGenerator;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -20,7 +22,15 @@ import java.util.Set;
 public class databaseFaculty implements Serializable {
 
     @Id
-    @Column(name = "faculty_ID", unique = true, nullable = false)
+    @Column(name = "faculty_ID")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "faculty_sequence")
+    @GenericGenerator(
+            name = "faculty_sequence",
+            strategy = "springboot_academic_system.IdGenerator",
+            parameters = {
+                    @Parameter(name = IdGenerator.INCREMENT_PARAM, value = "1"),
+                    @Parameter(name = IdGenerator.PREFIX_VALUE_PARAMETER, value = "P_"),
+                    @Parameter(name = IdGenerator.NUMBER_FORMAT_PARAMETER, value = "%d") })
     private String faculty_id;
 
     @Column(name = "faculty_name", length = 50, nullable = true)

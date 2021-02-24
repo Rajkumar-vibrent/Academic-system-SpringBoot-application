@@ -1,7 +1,9 @@
 package springboot_academic_system.database;
 
 import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.GenericGenerator;
 import org.springframework.lang.NonNull;
+import springboot_academic_system.IdGenerator;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -15,6 +17,14 @@ public class databaseCourse {
 
     @Id
     @Column(name = "course_id", length = 6)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "course_sequence")
+    @GenericGenerator(
+            name = "course_sequence",
+            strategy = "springboot_academic_system.IdGenerator",
+            parameters = {
+                    @org.hibernate.annotations.Parameter(name = IdGenerator.INCREMENT_PARAM, value = "1"),
+                    @org.hibernate.annotations.Parameter(name = IdGenerator.PREFIX_VALUE_PARAMETER, value = "CN_"),
+                    @org.hibernate.annotations.Parameter(name = IdGenerator.NUMBER_FORMAT_PARAMETER, value = "%d") })
     private String course_ID;
 
     @Column(name = "course_name")
