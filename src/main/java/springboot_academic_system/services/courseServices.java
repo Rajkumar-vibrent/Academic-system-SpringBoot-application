@@ -45,6 +45,11 @@ public class courseServices {
         courseRepo.save(course);
     }
 
+    public void setDeptByCourseID(String course_id, databaseDepartment dept){
+        Optional<databaseCourse> course = courseRepo.findById(course_id);
+        course.get().setDepartment(dept);
+    }
+
     public Set<databaseFaculty> facultiesByCourseId(String course_id){
         Optional<databaseCourse> course = courseRepo.findById(course_id);
         return course.get().getFaculties();

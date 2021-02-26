@@ -128,4 +128,9 @@ public class databaseCourse {
     public void setResults(List<databaseResult> results) {
         this.results = results;
     }
+
+    public void setDepartment(databaseDepartment dept){
+        this.setCourse_department(dept);
+        dept.getCourse_list().add(this);
+    }
 }

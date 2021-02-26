@@ -10,12 +10,12 @@ import java.util.List;
 
 @Entity
 @Table(name = "department")
-@NamedNativeQuery(name = "department.returnAll",
-        query = "select * from databaseDepartment",
-        resultClass = databaseDepartment.class)
-@NamedNativeQuery(name = "department.returnOne",
-        query = "select * from databaseDepartment where dept_ID = ?",
-        resultClass = databaseDepartment.class)
+//@NamedNativeQuery(name = "department.returnAll",
+//        query = "select * from databaseDepartment",
+//        resultClass = databaseDepartment.class)
+//@NamedNativeQuery(name = "department.returnOne",
+//        query = "select * from databaseDepartment where dept_ID = ?",
+//        resultClass = databaseDepartment.class)
 
 public class databaseDepartment {
 

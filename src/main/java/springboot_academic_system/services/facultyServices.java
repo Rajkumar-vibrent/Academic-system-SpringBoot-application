@@ -3,6 +3,7 @@ package springboot_academic_system.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import springboot_academic_system.database.databaseCourse;
+import springboot_academic_system.database.databaseDepartment;
 import springboot_academic_system.database.databaseFaculty;
 import springboot_academic_system.repository.courseRepository;
 import springboot_academic_system.repository.facultyRepository;
@@ -28,7 +29,13 @@ public class facultyServices {
     public void addCourseByFacultyId(String course_id, String faculty_id){
         Optional<databaseFaculty> faculty = facultyRepo.findById(faculty_id);
         Optional<databaseCourse> course = courseRepo.findById(course_id);
-        faculty.get().getCourses().add(course.get());
+        faculty.get().addCourse(course);       //.getCourses().add(course.get());
+    }
+
+    public void removeCourseByFacultyId(String course_id, String faculty_id){
+        Optional<databaseFaculty> faculty = facultyRepo.findById(faculty_id);
+        Optional<databaseCourse> course = courseRepo.findById(course_id);
+        faculty.get().removeCourse(course);       //.getCourses().add(course.get());
     }
 
     public Optional<databaseFaculty> getFaculty(String faculty_id){
@@ -56,6 +63,11 @@ public class facultyServices {
     public String getDeptByFacultyId(String faculty_id){
         Optional<databaseFaculty> faculty = facultyRepo.findById(faculty_id);
         return faculty.get().getFaculty_department().getDepartment_name();
+    }
+
+    public void setDepartmentByFacultyId(String faculty_id, databaseDepartment dept){
+        Optional<databaseFaculty> faculty = facultyRepo.findById(faculty_id);
+        faculty.get().addDepartment(dept);
     }
 
 }

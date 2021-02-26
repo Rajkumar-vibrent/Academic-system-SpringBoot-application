@@ -8,6 +8,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 @Entity
@@ -23,6 +24,7 @@ public class databaseFaculty implements Serializable {
 
     @Id
     @Column(name = "faculty_ID")
+    @SequenceGenerator(name = "faculty_sequence")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "faculty_sequence")
     @GenericGenerator(
             name = "faculty_sequence",
@@ -36,8 +38,8 @@ public class databaseFaculty implements Serializable {
     @Column(name = "faculty_name", length = 50, nullable = true)
     private String faculty_name;
 
-    @Column(name = "DOB", nullable = true)
-    private LocalDate date_of_birth;
+//    @Column(name = "DOB", nullable = true)
+//    private LocalDate date_of_birth;
 
     @Column(name = "DOJ", nullable = false)
     private LocalDate date_of_joining;
@@ -46,8 +48,9 @@ public class databaseFaculty implements Serializable {
 //    @ManyToOne(fetch = FetchType.LAZY)
 //    @JoinColumn(department entity ka dept_ID foreign key add karna hai)
 //
-    @Column(name = "domain_of_work", nullable = true, length = 30)
-    private String DOW;
+
+//    @Column(name = "domain_of_work", nullable = true, length = 30)
+//    private String DOW;
 
     @Column(name = "experience", nullable = true)
     private int experience;
@@ -65,31 +68,24 @@ public class databaseFaculty implements Serializable {
             inverseJoinColumns = { @JoinColumn(name = "fk_course")})
     private Set<databaseCourse> courses = new HashSet<databaseCourse>();
 
-    @Column(name = "gender")
-    private gender Gender;
-
-    @Column(name = "Level")
-    private professor Professor_level;
+//    @Column(name = "gender")
+//    private gender Gender;
+//
+//    @Column(name = "Level")
+//    private professor Professor_level;
 
     public databaseFaculty(){
 
     }
 
-    public databaseFaculty(String faculty_name, LocalDate date_of_birth,
-                           LocalDate date_of_joining, String DOW, int experience,
-                           String email_id, databaseDepartment faculty_department,
-                           Set<databaseCourse> courses, gender gender,
-                           professor professor_level) {
+    public databaseFaculty(String faculty_name, LocalDate date_of_joining, int experience, String email_id,
+                           databaseDepartment faculty_department, Set<databaseCourse> courses) {
         this.faculty_name = faculty_name;
-        this.date_of_birth = date_of_birth;
         this.date_of_joining = date_of_joining;
-        this.DOW = DOW;
         this.experience = experience;
         this.email_id = email_id;
         this.faculty_department = faculty_department;
         this.courses = courses;
-        Gender = gender;
-        Professor_level = professor_level;
     }
 
     public String getFaculty_id() {
@@ -108,28 +104,12 @@ public class databaseFaculty implements Serializable {
         this.faculty_name = faculty_name;
     }
 
-    public LocalDate getDate_of_birth() {
-        return date_of_birth;
-    }
-
-    public void setDate_of_birth(LocalDate date_of_birth) {
-        this.date_of_birth = date_of_birth;
-    }
-
     public LocalDate getDate_of_joining() {
         return date_of_joining;
     }
 
     public void setDate_of_joining(LocalDate date_of_joining) {
         this.date_of_joining = date_of_joining;
-    }
-
-    public String getDOW() {
-        return DOW;
-    }
-
-    public void setDOW(String DOW) {
-        this.DOW = DOW;
     }
 
     public int getExperience() {
@@ -164,30 +144,19 @@ public class databaseFaculty implements Serializable {
         this.courses = courses;
     }
 
-    public gender getGender() {
-        return Gender;
-    }
-
-    public void setGender(gender gender) {
-        Gender = gender;
-    }
-
-    public professor getProfessor_level() {
-        return Professor_level;
-    }
-
-    public void setProfessor_level(professor professor_level) {
-        Professor_level = professor_level;
-    }
-
     //helper functions to update associated entities
-    public void addCourse(databaseCourse c){
-        this.courses.add(c);
-        c.getFaculties().add(this);
+    public void addCourse(Optional<databaseCourse> c){
+        this.courses.add(c.get());
+        c.get().getFaculties().add(this);
     }
 
-    public void removeCourse(databaseCourse c){
-        this.courses.remove(c);
-        c.getFaculties().remove(c);
+    public void removeCourse(Optional<databaseCourse> c){
+        this.courses.remove(c.get());
+        c.get().getFaculties().remove(c);
+    }
+
+    public void addDepartment(databaseDepartment d){
+        this.setFaculty_department(d);
+        d.getFaculty_list().add(this);
     }
 }

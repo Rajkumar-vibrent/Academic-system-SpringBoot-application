@@ -30,7 +30,7 @@ public class facultyController {
         return faculty_service.getFaculty(faculty_id);
     }
 
-    @RequestMapping(value = "/faculty/add", method = RequestMethod.POST)
+    @RequestMapping(value = "/faculties/add", method = RequestMethod.POST)
     public void addFaculty(@RequestBody databaseFaculty faculty){
         faculty_service.addFaculty(faculty);
     }
@@ -46,11 +46,30 @@ public class facultyController {
         return courses;
     }
 
+    @RequestMapping(value = "/faculty/{id}/addcourse/{course_id}")
+    public void addCourseByFacultyId(@PathVariable(value = "id") String faculty_id,
+                                     @PathVariable(value = "course_id") String course_id){
+        addCourseByFacultyId(course_id, faculty_id);
+    }
+
+    @RequestMapping(value = "/faculty/{id}/removecourse/{course_id}")
+    public void removeCourseByFacultyId(@PathVariable(value = "id") String faculty_id,
+                                        @PathVariable(value = "course_id") String course_id){
+        removeCourseByFacultyId(course_id, faculty_id);
+    }
+
     @RequestMapping(value = "/faculty/{id}/dept")
     public String getDeptByFacultyId(@PathVariable String faculty_id){
         String dept_id = faculty_service.getDeptByFacultyId(faculty_id);
         Optional<databaseDepartment> dept = department_service.getDepartmentByDeptId(dept_id);
         return dept.get().getDepartment_name();
+    }
+
+    @RequestMapping(value = "faculty/{id}/setDepartment/{dept_id}", method = RequestMethod.GET)
+    public void setDepartmentByFacultyId(@PathVariable(value = "id") String faculty_id,
+                                         @PathVariable(value = "dept_id") String dept_id){
+        Optional<databaseDepartment> dept = department_service.getDepartmentByDeptId(dept_id);
+        faculty_service.setDepartmentByFacultyId(faculty_id, dept.get());
     }
 
 }
