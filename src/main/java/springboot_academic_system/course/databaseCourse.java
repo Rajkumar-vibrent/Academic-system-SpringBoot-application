@@ -10,6 +10,7 @@ import springboot_academic_system.student.databaseStudent;
 import javax.persistence.*;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -17,7 +18,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "course")
-public class databaseCourse {
+public class databaseCourse implements Serializable {
 
     @Id
     @Column(name = "course_code", length = 6)
