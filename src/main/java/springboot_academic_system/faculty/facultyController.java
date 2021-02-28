@@ -1,74 +1,48 @@
 package springboot_academic_system.faculty;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import springboot_academic_system.course.databaseCourse;
-import springboot_academic_system.department.databaseDepartment;
-import springboot_academic_system.faculty.databaseFaculty;
-import springboot_academic_system.department.departmentServices;
-import springboot_academic_system.faculty.facultyServices;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 public class facultyController {
 
     @Autowired
-    private facultyServices faculty_service;
+    facultyServices facultyService;
 
-    @Autowired
-    private departmentServices department_service;
-
-    @RequestMapping("/faculties")
-    public List<databaseFaculty> getFaculties(){
-        return faculty_service.getAllFaculties();
+    @RequestMapping(value = "/faculties")
+    public List<databaseFaculty> getAllFaculties(){
+        return facultyService.getAllFaculties();
     }
 
-    @RequestMapping("/faculty/{id}")
-    public Optional<databaseFaculty> getFaculty(String faculty_id){
-        return faculty_service.getFaculty(faculty_id);
+    @RequestMapping(value = "/faculty/{faculty_id}")
+    public databaseFaculty getFacultyById(@PathVariable String faculty_id) throws Throwable{
+        return facultyService.getFacultyById(faculty_id);
     }
 
-    @RequestMapping(value = "/faculties/add", method = RequestMethod.POST)
-    public void addFaculty(@RequestBody databaseFaculty faculty){
-        faculty_service.addFaculty(faculty);
+    @RequestMapping(value = "/faculty/add", method = RequestMethod.POST)
+    public void addFaculty(@RequestBody databaseFaculty facultyDetails){
+        facultyService.addFaculty(facultyDetails);
     }
 
-    @RequestMapping(value = "/faculty/edit/{id}", method = RequestMethod.POST)
-    public void editFaculty(@RequestBody databaseFaculty faculty){
-        faculty_service.editFacultyProfile(faculty);
+    @RequestMapping(value = "/faculty/remove/{faculty_id}", method = RequestMethod.DELETE)
+    public void remove(@PathVariable String faculty_id){
+        facultyService.removeFaculty(faculty_id);
     }
 
-    @RequestMapping(value = "/faculty/{id}/courses")
-    public List<databaseCourse> getCoursesByFacultyId(@PathVariable String id){
-        List<databaseCourse> courses = (List<databaseCourse>) faculty_service.getCoursesByFacultyId(id);
-        return courses;
+
+
+    @RequestMapping(value = "faculty/{faculty_id}/setDept/{dept_id}")
+    public void setDeptByFacultyId(@PathVariable(value = "faculty_id") String faculty_id,
+                                   @PathVariable(value = "dept_id") int dept_id) throws Throwable{
+        facultyService.setDepartmentByFacultyId(faculty_id, dept_id);
     }
 
-    @RequestMapping(value = "/faculty/{id}/addcourse/{course_id}")
-    public void addCourseByFacultyId(@PathVariable(value = "id") String faculty_id,
-                                     @PathVariable(value = "course_id") String course_id){
-        addCourseByFacultyId(course_id, faculty_id);
-    }
-
-    @RequestMapping(value = "/faculty/{id}/removecourse/{course_id}")
-    public void removeCourseByFacultyId(@PathVariable(value = "id") String faculty_id,
-                                        @PathVariable(value = "course_id") String course_id){
-        removeCourseByFacultyId(course_id, faculty_id);
-    }
-
-    @RequestMapping(value = "/faculty/{id}/dept")
-    public String getDeptByFacultyId(@PathVariable String faculty_id){
-        String dept_id = faculty_service.getDeptByFacultyId(faculty_id);
-        Optional<databaseDepartment> dept = department_service.getDepartmentByDeptId(dept_id);
-        return dept.get().getDepartment_name();
-    }
-
-    @RequestMapping(value = "faculty/{id}/setDepartment/{dept_id}", method = RequestMethod.GET)
-    public void setDepartmentByFacultyId(@PathVariable(value = "id") String faculty_id,
-                                         @PathVariable(value = "dept_id") String dept_id){
-        Optional<databaseDepartment> dept = department_service.getDepartmentByDeptId(dept_id);
-        faculty_service.setDepartmentByFacultyId(faculty_id, dept.get());
+    @RequestMapping(value = "faculty/{faculty_id}/addCourse/{course_id}")
+    public void addCourseByFacultyId(@PathVariable(value = "faculty_id") String faculty_id,
+                                     @PathVariable(value = "course_id") String course_id) throws Throwable{
+        facultyService.assignCourseToFacultyById(faculty_id, course_id);
     }
 }

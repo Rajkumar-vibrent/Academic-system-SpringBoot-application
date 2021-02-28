@@ -1,7 +1,11 @@
 package springboot_academic_system.department;
 
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
 
-public interface departmentRepository extends CrudRepository<databaseDepartment, String> {
+import java.util.Optional;
+
+@Repository
+public interface departmentRepository extends CrudRepository <databaseDepartment, Integer> {
 
 }

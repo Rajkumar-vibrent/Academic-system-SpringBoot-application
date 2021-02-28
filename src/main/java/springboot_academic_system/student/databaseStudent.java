@@ -1,114 +1,152 @@
 package springboot_academic_system.student;
 
+import org.hibernate.annotations.*;
+import org.hibernate.annotations.Parameter;
+import springboot_academic_system.Gender;
+import springboot_academic_system.IdGenerator;
 import springboot_academic_system.course.databaseCourse;
-import springboot_academic_system.gender;
+import springboot_academic_system.department.databaseDepartment;
 
 import javax.persistence.*;
-import java.time.LocalDate;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
-@Table(name = "students")
+@Table(name = "student")
 public class databaseStudent {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int student_ID;
+    @Column(name = "student_id")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "student_sequence")
+    @GenericGenerator(
+            name = "student_sequence",
+            strategy = "springboot_academic_system.IdGenerator",
+            parameters = {
+                    @Parameter(name = IdGenerator.INCREMENT_PARAM, value = "1"),
+                    @Parameter(name = IdGenerator.VALUE_PREFIX_PARAMETER, value = "B_"),
+                    @Parameter(name = IdGenerator.NUMBER_FORMAT_PARAMETER, value = "%02d") })
+    private String student_id;
 
-    @Column(name = "student_first_name")
-    private String first_name;
+    @Column(name = "first_name")
+    private String student_first_name;
 
-    @Column(name = "student_last_name")
-    private String last_name;
+    @Column(name = "last_name")
+    private String student_last_name;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "gender")
-    private gender gender;
+    @Column(name = "email_id")
+    private String email_id;
 
-    @Column(name = "Date_of_birth")
-    private LocalDate DOB;
 
-    @Column(name = "email_ID")
-    private String email_ID;
+    // mapping ManyToMany from student to course
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(name = "student_course",
-            joinColumns = { @JoinColumn(name = "fk_student") },
-            inverseJoinColumns = { @JoinColumn(name = "fk_course")})
-    private Set<databaseCourse> courses = new HashSet<databaseCourse>();
-//
-//    @OneToMany(cascade = CascadeType.ALL)
-//    List<databaseRESULT> results = new ArrayList<>();
+            joinColumns = @JoinColumn(name = "course_id"),
+            inverseJoinColumns = @JoinColumn(name = "student_id"))
+    private Set<databaseCourse> courseList = new HashSet<>();
 
-    public databaseStudent(){
+    @Transient
+    private Set<String> courseNameList = new HashSet<>();
+
+
+
+    // mapping ManyToOne from student to department
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "dept_id")
+    private databaseDepartment dept;
+
+    @Column(name = "department_name")
+    private String department_name;
+
+
+
+    @Enumerated
+    @Column(name = "gender")
+    private Gender gender;
+
+    public databaseStudent() {
 
     }
 
-    public databaseStudent(String first_name, String last_name,
-                           gender gender,
-                           LocalDate DOB, String email_ID, Set<databaseCourse> courses) {
-        this.first_name = first_name;
-        this.last_name = last_name;
+    public databaseStudent(String student_first_name, String student_last_name, Gender gender, String email_id) {
+        this.student_first_name = student_first_name;
+        this.student_last_name = student_last_name;
         this.gender = gender;
-        this.DOB = DOB;
-        this.email_ID = email_ID;
-        this.courses = courses;
+        this.email_id = email_id;
     }
 
-    public int getStudent_ID() {
-        return student_ID;
+    public String getStudent_id() {
+        return student_id;
     }
 
-    public void setStudent_ID(int student_ID) {
-        this.student_ID = student_ID;
+    public void setStudent_id(String student_id) {
+        this.student_id = student_id;
     }
 
-    public String getFirst_name() {
-        return first_name;
+    public String getStudent_first_name() {
+        return student_first_name;
     }
 
-    public void setFirst_name(String first_name) {
-        this.first_name = first_name;
+    public void setStudent_first_name(String student_first_name) {
+        this.student_first_name = student_first_name;
     }
 
-    public String getLast_name() {
-        return last_name;
+    public String getStudent_last_name() {
+        return student_last_name;
     }
 
-    public void setLast_name(String last_name) {
-        this.last_name = last_name;
+    public void setStudent_last_name(String student_last_name) {
+        this.student_last_name = student_last_name;
     }
 
-    public gender getGender() {
+    public Gender getGender() {
         return gender;
     }
 
-    public void setGender(gender gender) {
+    public void setGender(Gender gender) {
         this.gender = gender;
     }
 
-    public LocalDate getDOB() {
-        return DOB;
+    public String getEmail_id() {
+        return email_id;
     }
 
-    public void setDOB(LocalDate DOB) {
-        this.DOB = DOB;
+    public void setEmail_id(String email_id) {
+        this.email_id = email_id;
     }
 
-    public String getEmail_ID() {
-        return email_ID;
+
+
+    // getter and setters for student - course relationship
+
+    public void setCourseList(databaseCourse course) {
+        this.courseList.add(course);
     }
 
-    public void setEmail_ID(String email_ID) {
-        this.email_ID = email_ID;
+    public Set<String> getCourseNameList() {
+        for(databaseCourse c: courseList){
+            courseNameList.add(c.getCourse_name());
+        }
+        return courseNameList;
     }
 
-    public Set<databaseCourse> getCourses() {
-        return courses;
+
+
+    // getter and setter for student - department relationship
+
+    public void setDept(databaseDepartment dept) {
+        this.dept = dept;
     }
 
-    public void setCourses(Set<databaseCourse> courses) {
-        this.courses = courses;
+    public String getDepartment_name() {
+        department_name = dept.getDept_name();
+        return department_name;
     }
+
 }

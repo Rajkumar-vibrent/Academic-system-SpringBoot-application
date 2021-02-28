@@ -1,46 +1,47 @@
 package springboot_academic_system.student;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import springboot_academic_system.course.databaseCourse;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
 
 @RestController
-public class studentController {
+public class studentController{
 
     @Autowired
-    private studentServices student_service;
+    studentServices studentService;
 
-    @RequestMapping("/students")
-    public List<databaseStudent> getAllStudents() {
-        return student_service.getAllstudents();
+    @RequestMapping(value = "/students")
+    public List<databaseStudent> getAllStudents(){
+        return studentService.getAllStudents();
+    }
+
+    @RequestMapping(value = "/student/{student_id}")
+    public databaseStudent getStudentById(@PathVariable String student_id) throws Throwable {
+        return studentService.getStudentById(student_id);
+    }
+
+    @RequestMapping(value = "/student/add", method = RequestMethod.POST)
+    public void addStudent(@RequestBody databaseStudent studentDetails){
+        studentService.addStudents(studentDetails);
+    }
+
+    @RequestMapping(value = "/student/remove/{student_id}", method = RequestMethod.DELETE)
+    public void removeStudent(@PathVariable String student_id){
+        studentService.removeStudent(student_id);
     }
 
 
-    @RequestMapping("/student/{id}")
-    public Optional<databaseStudent> getStudent(@PathVariable int id) {
-        return student_service.getStudentById(id);
+
+    @RequestMapping(value = "/student/{student_id}/addcourse/{course_id}")
+    public void addCourse(@PathVariable(value = "student_id") String student_id,
+                          @PathVariable(value = "course_id") String course_id) throws Throwable{
+        studentService.addCourseByStudentId(student_id, course_id);
     }
 
-
-    @RequestMapping(method = RequestMethod.DELETE, value = "/students/{id}")
-    public void deleteStudent(@PathVariable int id) {
-        student_service.deleteStudentById(id);
+    @RequestMapping(value = "/student/{student_id}/setDept/{dept_id}")
+    public void setDeptByStudentId(@PathVariable(value = "student_id") String student_id,
+                                   @PathVariable(value = "dept_id") int dept_id) throws Throwable{
+        studentService.setDeptByStudentId(student_id, dept_id);
     }
-
-
-    @RequestMapping(method = RequestMethod.POST, value = "/students/add")
-    public void addStudent(@RequestBody databaseStudent student) {
-        student_service.add(student);
-    }
-
-    @RequestMapping(method = RequestMethod.GET, value = "/students/{id}/courses")
-    public List<databaseCourse> getCoursesByStudentId(@PathVariable int student_id){
-        return student_service.getCoursesByStudentId(student_id);
-    }
-
 }

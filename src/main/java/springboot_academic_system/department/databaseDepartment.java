@@ -1,80 +1,108 @@
 package springboot_academic_system.department;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
 import springboot_academic_system.IdGenerator;
+import org.hibernate.annotations.*;
 import springboot_academic_system.course.databaseCourse;
 import springboot_academic_system.faculty.databaseFaculty;
+import springboot_academic_system.student.databaseStudent;
 
 import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+
 @Entity
 @Table(name = "department")
-//@NamedNativeQuery(name = "department.returnAll",
-//        query = "select * from databaseDepartment",
-//        resultClass = databaseDepartment.class)
-//@NamedNativeQuery(name = "department.returnOne",
-//        query = "select * from databaseDepartment where dept_ID = ?",
-//        resultClass = databaseDepartment.class)
-
-public class databaseDepartment {
+public class databaseDepartment{
 
     @Id
-    @Column(name = "dept_ID", nullable = false)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "department_sequence")
-    @GenericGenerator(
-            name = "department_sequence",
-            strategy = "springboot_academic_system.IdGenerator",
-            parameters = {
-                    @org.hibernate.annotations.Parameter(name = IdGenerator.INCREMENT_PARAM, value = "1"),
-                    @org.hibernate.annotations.Parameter(name = IdGenerator.PREFIX_VALUE_PARAMETER, value = "DEPT_"),
-                    @org.hibernate.annotations.Parameter(name = IdGenerator.NUMBER_FORMAT_PARAMETER, value = "%d") })
-    private String department_id;
+    @Column(name = "department_id")
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private int dept_id;
 
-    @Column(name = "dept_name", unique = true)
-    private String department_name;
-
-    @Column(name = "HOD_name", unique = true)
-    private String hod_name;
+    @Column(name = "department_name", nullable = false)
+    private String dept_name;
 
     @Column(name = "establishment_date")
-    private LocalDate DOE;
+    private LocalDate establishment_date;
 
-    @OneToMany(mappedBy = "course_department", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<databaseCourse> course_list = new ArrayList<>();
+    @Column(name = "head_of_department")
+    private String hod_name;
 
-    @OneToMany(mappedBy = "faculty_department", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<databaseFaculty> faculty_list = new ArrayList<>();
+
+    //mapping department and faculty
+
+    @OneToMany(mappedBy = "dept")
+    private List<databaseFaculty> facultyList = new ArrayList<>();
+
+    @Transient
+    private List<String> facultyNameList = new ArrayList<>();
+
+
+    //mapping department and course
+
+    @OneToMany(mappedBy =  "dept")
+    private List<databaseCourse> courseList = new ArrayList<>();
+
+    @Transient
+    private List<String> courseNameList = new ArrayList<>();
+
+
+
+    // mapping department and student
+
+    @OneToMany(mappedBy = "dept")
+    private List<databaseStudent> studentList = new ArrayList<>();
+
+    @Transient
+    private List<String> studentNameList = new ArrayList<>();
+
+
+
 
     public databaseDepartment(){
 
     }
 
-    public databaseDepartment(String department_name, String hod_name, LocalDate DOE,
-                              List<databaseCourse> course_list, List<databaseFaculty> faculty_list) {
-        this.department_name = department_name;
+    public databaseDepartment(String dept_name, LocalDate establishment_date,
+                              String hod_name, List<String> facultyNameList,
+                              List<String> courseNameList) {
+        this.dept_name = dept_name;
+        this.establishment_date = establishment_date;
         this.hod_name = hod_name;
-        this.DOE = DOE;
-        this.course_list = course_list;
-        this.faculty_list = faculty_list;
+        this.facultyNameList = facultyNameList;
+        this.courseNameList = courseNameList;
     }
 
-    public String getDepartment_id() {
-        return department_id;
+
+    public int getDept_id() {
+        return dept_id;
     }
 
-    public void setDepartment_id(String department_id) {
-        this.department_id = department_id;
+    public void setDept_id(int dept_id) {
+        this.dept_id = dept_id;
     }
 
-    public String getDepartment_name() {
-        return department_name;
+    public String getDept_name() {
+        return dept_name;
     }
 
-    public void setDepartment_name(String department_name) {
-        this.department_name = department_name;
+    public void setDept_name(String dept_name) {
+        this.dept_name = dept_name;
+    }
+
+    public LocalDate getEstablishment_date() {
+        return establishment_date;
+    }
+
+    public void setEstablishment_date(LocalDate establishment_date) {
+        this.establishment_date = establishment_date;
     }
 
     public String getHod_name() {
@@ -85,27 +113,46 @@ public class databaseDepartment {
         this.hod_name = hod_name;
     }
 
-    public LocalDate getDOE() {
-        return DOE;
+
+
+    // getter and setter for department - faculty relationship
+
+    public void setFacultyList(databaseFaculty faculty) {       //add faculty name to facultyList
+        this.facultyList.add(faculty);
     }
 
-    public void setDOE(LocalDate DOE) {
-        this.DOE = DOE;
+    public List<String> getFacultyNameList() {          //get faculty name list for each department
+        for(databaseFaculty f: this.facultyList){
+            facultyNameList.add(f.getFaculty_name());
+        }
+        return facultyNameList;
     }
 
-    public List<databaseCourse> getCourse_list() {
-        return course_list;
+
+    // getter and setter for department - course relationship
+
+    public void setCourseList(databaseCourse course) {      // add course name to courseList
+        this.courseList.add(course);
     }
 
-    public void setCourse_list(List<databaseCourse> course_list) {
-        this.course_list = course_list;
+    public List<String> getCourseNameList() {           // get course name list for each course
+        for(databaseCourse c: this.courseList){
+            courseNameList.add(c.getCourse_name());
+        }
+        return courseNameList;
     }
 
-    public List<databaseFaculty> getFaculty_list() {
-        return faculty_list;
+
+    // getter and setter for department - student relationship
+
+    public void setStudentList(databaseStudent student){        // add student full name to studentList
+        this.studentList.add(student);
     }
 
-    public void setFaculty_list(List<databaseFaculty> faculty_list) {
-        this.faculty_list = faculty_list;
+    public List<String> getStudentNameList(){               // get student name list for each student
+        for(databaseStudent s: this.studentList){
+            studentNameList.add(s.getStudent_first_name() + " " + s.getStudent_last_name());
+        }
+        return studentNameList;
     }
 }

@@ -1,86 +1,102 @@
 package springboot_academic_system.course;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
 import springboot_academic_system.IdGenerator;
 import springboot_academic_system.department.databaseDepartment;
 import springboot_academic_system.faculty.databaseFaculty;
-import springboot_academic_system.result.databaseResult;
 import springboot_academic_system.student.databaseStudent;
 
 import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 @Entity
-@Table(name = "courses")
+@Table(name = "course")
 public class databaseCourse {
 
     @Id
-    @Column(name = "course_id", length = 6)
+    @Column(name = "course_code", length = 6)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "course_sequence")
     @GenericGenerator(
             name = "course_sequence",
             strategy = "springboot_academic_system.IdGenerator",
             parameters = {
-                    @org.hibernate.annotations.Parameter(name = IdGenerator.INCREMENT_PARAM, value = "1"),
-                    @org.hibernate.annotations.Parameter(name = IdGenerator.PREFIX_VALUE_PARAMETER, value = "CN_"),
-                    @org.hibernate.annotations.Parameter(name = IdGenerator.NUMBER_FORMAT_PARAMETER, value = "%d") })
-    private String course_ID;
+                    @Parameter(name = IdGenerator.INCREMENT_PARAM, value = "1"),
+                    @Parameter(name = IdGenerator.VALUE_PREFIX_PARAMETER, value = "C_"),
+                    @Parameter(name = IdGenerator.NUMBER_FORMAT_PARAMETER, value = "%02d") })
+    private String course_id;
 
     @Column(name = "course_name")
-    private String name;
+    private String course_name;
 
     @Column(name = "max_grades")
     private int max_grades;
 
-    @Column(name = "no_of_lectures")
-    private int lectures;
+    @Column(name = "Preferred_year")
+    private int year;       // limit its range from 1-4
 
-    @ManyToOne
-    @JoinColumn(name = "dept_ID")
-    private databaseDepartment course_department;
 
-    @ManyToMany(mappedBy = "courses")
-    private Set<databaseStudent> students = new HashSet<>();
 
-    @ManyToMany(mappedBy = "courses")
-    private Set<databaseFaculty> faculties = new HashSet<>();
+    // mapping course and department    - owner
 
-    @OneToMany(cascade = CascadeType.ALL)
-    List<databaseResult> results = new ArrayList<>();
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "dept_id")
+    private databaseDepartment dept;
+
+    @Column(name = "dept_name")
+    private String dept_name;
+
+
+
+    // mapping course and student
+
+    @ManyToMany(mappedBy = "courseList")
+    private Set<databaseStudent> studentList = new HashSet<>();
+
+    @Transient
+    private List<String> studentNameList = new ArrayList<>();
+
+
+
+    // mapping course and faculty
+
+    @ManyToMany(mappedBy = "courseSet")
+    private Set<databaseFaculty> facultySet = new HashSet<databaseFaculty>();
+
+    @Transient
+    private List<String> facultyNameSet = new ArrayList<>();
+
+
 
     public databaseCourse(){
 
     }
 
-    public databaseCourse(String name, int max_grades, int lectures,
-                          databaseDepartment course_department, Set<databaseStudent> students,
-                          Set<databaseFaculty> faculties, List<databaseResult> results) {
-        this.name = name;
+    public databaseCourse(String course_name, int max_grades, int year) {
+        this.course_name = course_name;
         this.max_grades = max_grades;
-        this.lectures = lectures;
-        this.course_department = course_department;
-        this.students = students;
-        this.faculties = faculties;
-        this.results = results;
+        this.year = year;
     }
 
-    public String getCourse_ID() {
-        return course_ID;
+    public String getCourse_id() {
+        return course_id;
     }
 
-    public void setCourse_ID(String course_ID) {
-        this.course_ID = course_ID;
+    public void setCourse_id(String course_id) {
+        this.course_id = course_id;
     }
 
-    public String getName() {
-        return name;
+    public String getCourse_name() {
+        return course_name;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setCourse_name(String course_name) {
+        this.course_name = course_name;
     }
 
     public int getMax_grades() {
@@ -91,48 +107,54 @@ public class databaseCourse {
         this.max_grades = max_grades;
     }
 
-    public int getLectures() {
-        return lectures;
+    public int getYear() {
+        return year;
     }
 
-    public void setLectures(int lectures) {
-        this.lectures = lectures;
+    public void setYear(int year) {
+        this.year = year;
     }
 
-    public databaseDepartment getCourse_department() {
-        return course_department;
+
+
+
+    // getter and setter for course - department relationship
+
+    public void setDept(databaseDepartment dept) {
+        this.dept = dept;
+        this.dept_name = dept.getDept_name();
     }
 
-    public void setCourse_department(databaseDepartment course_department) {
-        this.course_department = course_department;
+    public String getDept_name() {
+        return dept_name;
     }
 
-    public Set<databaseStudent> getStudents() {
-        return students;
+
+
+    // getter and setter for course - student relationship
+
+    public void setStudentList(databaseStudent student){
+        this.studentList.add(student);
     }
 
-    public void setStudents(Set<databaseStudent> students) {
-        this.students = students;
+    public List<String> getStudentNameList(){
+        for(databaseStudent s: studentList){
+            studentNameList.add(s.getStudent_first_name() + " " + s.getStudent_last_name());
+        }
+        return studentNameList;
     }
 
-    public Set<databaseFaculty> getFaculties() {
-        return faculties;
+
+    // getter and setter for course - faculty relationship
+
+    public void setFacultySet(databaseFaculty faculty){
+        this.facultySet.add(faculty);
     }
 
-    public void setFaculties(Set<databaseFaculty> faculties) {
-        this.faculties = faculties;
-    }
-
-    public List<databaseResult> getResults() {
-        return results;
-    }
-
-    public void setResults(List<databaseResult> results) {
-        this.results = results;
-    }
-
-    public void setDepartment(databaseDepartment dept){
-        this.setCourse_department(dept);
-        dept.getCourse_list().add(this);
+    public List<String> getFacultyNameSet(){
+        for(databaseFaculty f: facultySet){
+            facultyNameSet.add(f.getFaculty_name());
+        }
+        return facultyNameSet;
     }
 }

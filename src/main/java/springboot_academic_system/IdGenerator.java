@@ -13,8 +13,8 @@ import java.io.Serializable;
 import java.util.Properties;
 
 public class IdGenerator extends SequenceStyleGenerator {
-    public static final String PREFIX_VALUE_PARAMETER = "valuePrefix";
-    public static final String PREFIX_VALUE_DEFAULT = "";
+    public static final String VALUE_PREFIX_PARAMETER = "valuePrefix";
+    public static final String VALUE_PREFIX_DEFAULT = "";
     private String valuePrefix;
 
     public static final String NUMBER_FORMAT_PARAMETER = "numberFormat";
@@ -29,7 +29,7 @@ public class IdGenerator extends SequenceStyleGenerator {
     @Override
     public void configure(Type type, Properties params, ServiceRegistry serviceRegistry) throws MappingException {
         super.configure(LongType.INSTANCE, params, serviceRegistry);
-        valuePrefix = ConfigurationHelper.getString(PREFIX_VALUE_DEFAULT, params, PREFIX_VALUE_DEFAULT);
+        valuePrefix = ConfigurationHelper.getString(VALUE_PREFIX_PARAMETER, params, VALUE_PREFIX_DEFAULT);
         numberFormat = ConfigurationHelper.getString(NUMBER_FORMAT_PARAMETER, params, NUMBER_FORMAT_DEFAULT);
     }
 }
